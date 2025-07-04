@@ -1,4 +1,5 @@
 !![World Natural Earth II](images/World%20Natural%20Earth%20II.jpg)
+<https://github.com/iguacel/gis-gdal-ne>
 
 # EP Natural Earth
 
@@ -14,11 +15,7 @@ Doc en google docs
 https://drive.google.com/open?id=1sWIhB5gMuiVcLAZEeVnxMiP8AcKNuQ7g&usp=drive_fs
 ```
 
-<https://github.com/iguacel/gis-gdal-ne>
-
 Automatiza la descarga y modificación de capas de países del repositorio [Natural Earth](https://www.naturalearthdata.com/). Los scripts utilizados preservan los atributos originales y exportan los resultados en distintos niveles de detalle: 1:10m, 1:50m y 1:110m.
-
----
 
 ## Cambios en geometría
 
@@ -63,13 +60,9 @@ OUTPUT/
 - **REDUX/**: Contiene versiones simplificadas de los archivos, solo con los campos clave necesarios para visualización o análisis básico.
 - **BASE/**: Incluye capas físicas base (costa, océanos, graticules, etc.) descargadas y convertidas a GeoPackage.
 
-------
-
 ## Versión *REDUX*
 
 Esta versión *redux* mantiene solo los campos clave para representar países y fronteras.
-
----
 
 #### 🗺 `admin_0_countries` – Campos mantenidos
 
@@ -85,8 +78,6 @@ Esta versión *redux* mantiene solo los campos clave para representar países y 
 | `LABEL_Y` | Coordenada Y del punto ideal para etiquetar el país.                     |
 
 > 🔎 Se han eliminado más de 50 campos redundantes como nombres en múltiples idiomas, indicadores económicos, códigos alternativos, banderas, valores de exportación/importación, etc.
-
----
 
 #### 🗺 `admin_0_boundary_lines_land` – Campos mantenidos
 
@@ -108,14 +99,10 @@ Los shapefiles modificados se exportan en tres niveles de resolución:
 
 Además, se exportan versiones en GeoPackage (`.gpkg`), GeoJSON (`.geojson`) y TopoJSON (`.topojson`), compatibles con entornos web y GIS.
 
----
-
 ## Requisitos
 
 - GDAL >= 3.0 (testeado en GDAL 3.11.0 "Eganville", released 2025/05/06)
 - `curl`, `unzip`, `ogr2ogr`, `topojson`
-
----
 
 ## Uso
 
