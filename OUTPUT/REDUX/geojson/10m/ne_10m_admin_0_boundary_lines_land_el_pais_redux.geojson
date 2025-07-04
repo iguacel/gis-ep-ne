@@ -435,7 +435,6 @@
 { "type": "Feature", "properties": { "NE_ID": 1746708603, "FEATURECLA": "Indeterminant frontier", "SCALERANK": 5 }, "geometry": null },
 { "type": "Feature", "properties": { "NE_ID": 1746708607, "FEATURECLA": "Indeterminant frontier", "SCALERANK": 5 }, "geometry": null },
 { "type": "Feature", "properties": { "NE_ID": 1746708613, "FEATURECLA": "Overlay limit", "SCALERANK": 6 }, "geometry": null },
-{ "type": "Feature", "properties": { "NE_ID": 1746708621, "FEATURECLA": "Lease limit", "SCALERANK": 1 }, "geometry": null },
 { "type": "Feature", "properties": { "NE_ID": 1746708623, "FEATURECLA": "Overlay limit", "SCALERANK": 6 }, "geometry": null },
 { "type": "Feature", "properties": { "NE_ID": 1746708629, "FEATURECLA": "Overlay limit", "SCALERANK": 4 }, "geometry": null },
 { "type": "Feature", "properties": { "NE_ID": 1746708639, "FEATURECLA": "Overlay limit", "SCALERANK": 6 }, "geometry": null },

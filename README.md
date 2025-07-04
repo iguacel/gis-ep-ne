@@ -2,6 +2,14 @@
 
 Procesamiento de archivos de Natural Earth
 
+Carpeta en el drive
+
+Drive/My Drive/EP NATURAL EARTH
+
+```
+https://drive.google.com/open?id=1sWIhB5gMuiVcLAZEeVnxMiP8AcKNuQ7g&usp=drive_fs
+```
+
 <https://github.com/iguacel/gis-gdal-ne>
 
 Automatiza la descarga y modificación de capas de países del repositorio [Natural Earth](https://www.naturalearthdata.com/). Los scripts utilizados preservan los atributos originales y exportan los resultados en distintos niveles de detalle: 1:10m, 1:50m y 1:110m.

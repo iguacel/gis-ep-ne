@@ -5,7 +5,7 @@ SCALES=("10m" "50m" "110m")
 # NE_IDs to remove per country
 MOROCCO_ID=1746705351
 UKRAINE_ID=1746708787
-BAIKONUR_ID=1746708621 # Only in 110m
+BAIKONUR_ID=1746708621 # Only in 10m
 
 for scale in "${SCALES[@]}"; do
   INDIR="/tmp/ne/${scale}/admin_0_boundary_lines_land"
@@ -30,7 +30,7 @@ for scale in "${SCALES[@]}"; do
 
   # Compose SQL filter
   FILTER_IDS="$MOROCCO_ID,$UKRAINE_ID"
-  if [ "$scale" = "110m" ]; then
+  if [ "$scale" = "10m" ]; then
     FILTER_IDS="$FILTER_IDS,$BAIKONUR_ID"
   fi
 
