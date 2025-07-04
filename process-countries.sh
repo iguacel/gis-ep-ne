@@ -65,6 +65,18 @@ generate_select_sql() {
     '
 }
 
+# Function to get all non-geometry columns from a layer
+get_non_geom_columns() {
+  local gpkg_file="$1"
+  local layer_name="$2"
+  # Get column list from ogrinfo, only actual columns with type specifications, excluding geometry
+  ogrinfo -so "$gpkg_file" "$layer_name" | \
+    awk '/^[[:space:]]*[A-Za-z_][A-Za-z0-9_]*: [A-Za-z]+ \(/ && !/^[[:space:]]*Geometry:/ && !/GEOMETRY/ {gsub(/:/, ""); gsub(/^[[:space:]]+/, ""); print $1}' | \
+    grep -v "^$" | \
+    tr '\n' ',' | \
+    sed 's/,$//'
+}
+
 # === Extract Crimea geometry from 10m admin-1 provinces once ===
 CRIMEA_GEOM_GPKG="/tmp/ne/crimea_geom.gpkg"
 CRIMEA_GEOM_LAYER="crimea_geom"
@@ -180,17 +192,18 @@ FROM temp_morocco;
   ogr2ogr -f GPKG -nlt MULTIPOLYGON $OGR_SRS_FLAGS "$TMPDIR/temp_kazakhstan.gpkg" "$INPUT_GPKG" -nln temp_kazakhstan -dialect sqlite -sql "
 SELECT * FROM ne_${scale}_admin_0_countries WHERE NAME IN ('Kazakhstan', 'Baikonur');
 "
-  
-  # Generate MIN() SQL for Kazakhstan merge
-  KAZAKHSTAN_MIN_SQL=$(generate_min_sql "$TMPDIR/temp_kazakhstan.gpkg" "temp_kazakhstan" "temp_kazakhstan")
-  
+  # Merge, keeping Kazakhstan's properties (except geometry)
+  KAZAKHSTAN_NON_GEOM_COLS=$(get_non_geom_columns "$TMPDIR/temp_kazakhstan.gpkg" "temp_kazakhstan")
+  GEOM_FIELD=$(ogrinfo -so "$TMPDIR/temp_kazakhstan.gpkg" "temp_kazakhstan" 2>/dev/null | grep -E 'Geometry Column' | awk -F= '{print $2}' | xargs)
+  if [ -z "$GEOM_FIELD" ]; then
+    GEOM_FIELD="GEOMETRY"
+  fi
   ogr2ogr -f GPKG -nlt MULTIPOLYGON $OGR_SRS_FLAGS "$TMPDIR/fused_kazakhstan.gpkg" "$TMPDIR/temp_kazakhstan.gpkg" -nln fused_kazakhstan -dialect sqlite -sql "
 SELECT 
-  'Kazakhstan' AS NAME,
-  'Kazakhstan' AS ADMIN,
-$KAZAKHSTAN_MIN_SQL,
-  ST_Union(geom) AS geom 
-FROM temp_kazakhstan;
+  $KAZAKHSTAN_NON_GEOM_COLS,
+  (SELECT ST_Union($GEOM_FIELD) FROM temp_kazakhstan) AS $GEOM_FIELD
+FROM temp_kazakhstan
+WHERE NAME = 'Kazakhstan';
 "
 
   # 3. Extract Crimea
