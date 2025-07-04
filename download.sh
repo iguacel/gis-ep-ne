@@ -2,7 +2,7 @@
 set -e
 
 SCALES=("10m" "50m" "110m")
-LAYERS=("admin_0_countries" "admin_1_states_provinces" "ne_10m_admin_0_boundary_lines_land")
+LAYERS=("admin_0_countries" "admin_1_states_provinces" "admin_0_boundary_lines_land")
 EXTS=("shp" "shx" "dbf" "prj" "cpg")
 BASE_URL="https://github.com/nvkelso/natural-earth-vector/raw/refs/heads/master"
 

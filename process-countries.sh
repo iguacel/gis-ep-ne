@@ -4,6 +4,67 @@ set -x
 
 SCALES=("10m" "50m" "110m")
 
+# Function to get all columns from a layer (excluding geometry)
+get_all_columns() {
+  local gpkg_file="$1"
+  local layer_name="$2"
+  
+  # Get column list from ogrinfo, only actual columns with type specifications
+  ogrinfo -so "$gpkg_file" "$layer_name" | \
+    awk '/^[[:space:]]*[A-Za-z_][A-Za-z0-9_]*: [A-Za-z]+ \(/ && !/^[[:space:]]*Geometry:/ {gsub(/:/, ""); gsub(/^[[:space:]]+/, ""); print $1}' | \
+    grep -v "^$" | \
+    tr '\n' ',' | \
+    sed 's/,$//'
+}
+
+# Function to generate MIN() SQL for all columns
+generate_min_sql() {
+  local gpkg_file="$1"
+  local layer_name="$2"
+  local table_alias="$3"
+  
+  # Get all columns
+  local columns=$(get_all_columns "$gpkg_file" "$layer_name")
+  
+  # Convert to MIN() format - use awk to handle the comma properly
+  echo "$columns" | tr ',' '\n' | \
+    awk -v table="$table_alias" '
+      BEGIN { first = 1 }
+      {
+        if (first) {
+          printf "  MIN(%s.%s) AS %s", table, $1, $1
+          first = 0
+        } else {
+          printf ",\n  MIN(%s.%s) AS %s", table, $1, $1
+        }
+      }
+    '
+}
+
+# Function to generate direct column selection SQL
+generate_select_sql() {
+  local gpkg_file="$1"
+  local layer_name="$2"
+  local table_alias="$3"
+  
+  # Get all columns
+  local columns=$(get_all_columns "$gpkg_file" "$layer_name")
+  
+  # Convert to direct selection format - use awk to handle the comma properly
+  echo "$columns" | tr ',' '\n' | \
+    awk -v table="$table_alias" '
+      BEGIN { first = 1 }
+      {
+        if (first) {
+          printf "  %s.%s", table, $1
+          first = 0
+        } else {
+          printf ",\n  %s.%s", table, $1
+        }
+      }
+    '
+}
+
 # === Extract Crimea geometry from 10m admin-1 provinces once ===
 CRIMEA_GEOM_GPKG="/tmp/ne/crimea_geom.gpkg"
 CRIMEA_GEOM_LAYER="crimea_geom"
@@ -69,7 +130,7 @@ if ! jq empty "$CRIMEA_BBOX_GEOJSON"; then
 fi
 
 for scale in 10m 50m 110m; do
-  mkdir -p ./OUTPUT/tmp/$scale/
+  mkdir -p ./OUTPUT/FULL/tmp/$scale/
 done
 
 for scale in "${SCALES[@]}"; do
@@ -78,10 +139,10 @@ for scale in "${SCALES[@]}"; do
   ADMIN1_DIR="/tmp/ne/${scale}/admin_1_states_provinces"
   INPUT_SHAPE="$INPUT_DIR/ne_${scale}_admin_0_countries.shp"
   ADMIN1_SHAPE="$ADMIN1_DIR/ne_${scale}_admin_1_states_provinces.shp"
-  OUTDIR_GPKG="./OUTPUT/geopackage/${scale}"
-  OUTDIR_GEOJSON="./OUTPUT/geojson/${scale}"
-  OUTDIR_SHP="./OUTPUT/shapefile/${scale}"
-  TMPDIR="./OUTPUT/tmp/${scale}"
+  OUTDIR_GPKG="./OUTPUT/FULL/geopackage/${scale}"
+  OUTDIR_GEOJSON="./OUTPUT/FULL/geojson/${scale}"
+  OUTDIR_SHP="./OUTPUT/FULL/shapefile/${scale}"
+  TMPDIR="./OUTPUT/FULL/tmp/${scale}"
   mkdir -p "$OUTDIR_GPKG" "$OUTDIR_GEOJSON" "$OUTDIR_SHP" "$TMPDIR"
 
   if [ "$scale" = "110m" ]; then
@@ -102,16 +163,34 @@ for scale in "${SCALES[@]}"; do
   ogr2ogr -f GPKG -nlt MULTIPOLYGON $OGR_SRS_FLAGS "$TMPDIR/temp_morocco.gpkg" "$INPUT_GPKG" -nln temp_morocco -dialect sqlite -sql "
 SELECT * FROM ne_${scale}_admin_0_countries WHERE NAME IN ('Morocco', 'W. Sahara');
 "
+  
+  # Generate MIN() SQL for Morocco merge
+  MOROCCO_MIN_SQL=$(generate_min_sql "$TMPDIR/temp_morocco.gpkg" "temp_morocco" "temp_morocco")
+  
   ogr2ogr -f GPKG -nlt MULTIPOLYGON $OGR_SRS_FLAGS "$TMPDIR/fused_morocco.gpkg" "$TMPDIR/temp_morocco.gpkg" -nln fused_morocco -dialect sqlite -sql "
-SELECT MIN(NAME) AS NAME, MIN(ADMIN) AS ADMIN, MIN(ISO_A3) AS ISO_A3, ST_Union(geom) AS geom FROM temp_morocco;
+SELECT 
+  'Morocco' AS NAME,
+  'Morocco' AS ADMIN,
+$MOROCCO_MIN_SQL,
+  ST_Union(geom) AS geom 
+FROM temp_morocco;
 "
 
   # 2. Merge Baikonur and Kazakhstan
   ogr2ogr -f GPKG -nlt MULTIPOLYGON $OGR_SRS_FLAGS "$TMPDIR/temp_kazakhstan.gpkg" "$INPUT_GPKG" -nln temp_kazakhstan -dialect sqlite -sql "
 SELECT * FROM ne_${scale}_admin_0_countries WHERE NAME IN ('Kazakhstan', 'Baikonur');
 "
+  
+  # Generate MIN() SQL for Kazakhstan merge
+  KAZAKHSTAN_MIN_SQL=$(generate_min_sql "$TMPDIR/temp_kazakhstan.gpkg" "temp_kazakhstan" "temp_kazakhstan")
+  
   ogr2ogr -f GPKG -nlt MULTIPOLYGON $OGR_SRS_FLAGS "$TMPDIR/fused_kazakhstan.gpkg" "$TMPDIR/temp_kazakhstan.gpkg" -nln fused_kazakhstan -dialect sqlite -sql "
-SELECT 'Kazakhstan' AS NAME, 'Kazakhstan' AS ADMIN, MIN(ISO_A3) AS ISO_A3, ST_Union(geom) AS geom FROM temp_kazakhstan;
+SELECT 
+  'Kazakhstan' AS NAME,
+  'Kazakhstan' AS ADMIN,
+$KAZAKHSTAN_MIN_SQL,
+  ST_Union(geom) AS geom 
+FROM temp_kazakhstan;
 "
 
   # 3. Extract Crimea
@@ -130,13 +209,15 @@ SELECT * FROM ne_${scale}_admin_1_states_provinces WHERE adm1_code IN ('RUS-5482
   ogr2ogr -f GPKG -nlt MULTIPOLYGON -makevalid $OGR_SRS_FLAGS "$TMPDIR/ukraine_and_crimea.gpkg" "$INPUT_GPKG" -nln ukraine -dialect sqlite -sql "
 SELECT * FROM ne_${scale}_admin_0_countries WHERE NAME = 'Ukraine';
 "
+  
+  # Generate direct selection SQL for Ukraine
+  UKRAINE_SELECT_SQL=$(generate_select_sql "$TMPDIR/ukraine_and_crimea.gpkg" "ukraine" "ukraine")
+  
   if [ "$scale" = "10m" ]; then
     ogr2ogr -f GPKG -nlt MULTIPOLYGON -makevalid $OGR_SRS_FLAGS "$TMPDIR/ukraine_and_crimea.gpkg" "$TMPDIR/temp_crimea.gpkg" -update -nln crimea
     ogr2ogr -f GPKG -nlt MULTIPOLYGON -makevalid $OGR_SRS_FLAGS "$TMPDIR/ukraine_plus_crimea.gpkg" "$TMPDIR/ukraine_and_crimea.gpkg" -nln ukraine_plus_crimea -dialect sqlite -sql "
 SELECT
-  NAME,
-  ADMIN,
-  ISO_A3,
+$UKRAINE_SELECT_SQL,
   ST_Union(geom, (SELECT ST_Union(geom) FROM crimea)) AS geom
 FROM ukraine;
 "
@@ -156,9 +237,7 @@ WITH bbox AS (SELECT geom FROM temp_crimea_bbox),
      russia_geom AS (SELECT geom FROM russia),
      crimea_piece AS (SELECT ST_Union(ST_Intersection(russia_geom.geom, bbox.geom)) AS geom FROM russia_geom, bbox)
 SELECT
-  NAME,
-  ADMIN,
-  ISO_A3,
+$UKRAINE_SELECT_SQL,
   ST_Union(geom, (SELECT geom FROM crimea_piece)) AS geom
 FROM ukraine;
 "
@@ -174,13 +253,15 @@ WHERE NAME NOT IN ('Morocco', 'W. Sahara', 'Kazakhstan', 'Baikonur', 'Russia', '
   ogr2ogr -f GPKG -nlt MULTIPOLYGON -makevalid $OGR_SRS_FLAGS "$TMPDIR/russia_and_crimea.gpkg" "$INPUT_GPKG" -nln russia -dialect sqlite -sql "
 SELECT * FROM ne_${scale}_admin_0_countries WHERE NAME = 'Russia';
 "
+  
+  # Generate direct selection SQL for Russia
+  RUSSIA_SELECT_SQL=$(generate_select_sql "$TMPDIR/russia_and_crimea.gpkg" "russia" "russia")
+  
   if [ "$scale" = "10m" ]; then
     ogr2ogr -f GPKG -nlt MULTIPOLYGON -makevalid $OGR_SRS_FLAGS "$TMPDIR/russia_and_crimea.gpkg" "$TMPDIR/temp_crimea.gpkg" -update -nln crimea
     ogr2ogr -f GPKG -nlt MULTIPOLYGON -makevalid $OGR_SRS_FLAGS "$TMPDIR/russia_crimea_removed.gpkg" "$TMPDIR/russia_and_crimea.gpkg" -nln russia_clean -dialect sqlite -sql "
 SELECT
-  NAME,
-  ADMIN,
-  ISO_A3,
+$RUSSIA_SELECT_SQL,
   ST_Difference(geom, (SELECT ST_Union(geom) FROM crimea)) AS geom
 FROM russia;
 "
@@ -188,9 +269,7 @@ FROM russia;
     ogr2ogr -f GPKG -nlt MULTIPOLYGON -makevalid $OGR_SRS_FLAGS "$TMPDIR/russia_and_crimea.gpkg" "$TMPDIR/temp_crimea.gpkg" -update -nln temp_crimea_bbox
     ogr2ogr -f GPKG -nlt MULTIPOLYGON -makevalid $OGR_SRS_FLAGS "$TMPDIR/russia_crimea_removed.gpkg" "$TMPDIR/russia_and_crimea.gpkg" -nln russia_clean -dialect sqlite -sql "
 SELECT
-  NAME,
-  ADMIN,
-  ISO_A3,
+$RUSSIA_SELECT_SQL,
   ST_Difference(geom, (SELECT ST_Union(geom) FROM temp_crimea_bbox)) AS geom
 FROM russia;
 "
