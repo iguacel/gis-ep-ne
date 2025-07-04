@@ -123,3 +123,11 @@ Steps
 ./process-boundaries-lines.sh # Borra fronteras
 ./redux-boundaries-lines.sh # Elimina propiedades y guarda en la carpeta redux
 ```
+
+## Base files
+
+```bash
+./base-files.sh
+```
+
+Este script descarga y convierte a geopackage algunas capas básicas. No se ejecuta desde main.sh
