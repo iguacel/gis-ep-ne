@@ -282,6 +282,7 @@ FROM russia;
     -single \
     -nln ${OUTBASE} \
     -o "$FINAL_GPKG" \
+    -overwrite_ds \
     $OGR_SKIPFAIL \
     "$TMPDIR/temp_rest.gpkg" \
     "$TMPDIR/russia_crimea_removed.gpkg" \

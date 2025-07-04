@@ -18,12 +18,17 @@ for scale in "${SCALES[@]}"; do
       OUTFILE="$OUTDIR/${OUTBASE}.gpkg"
       if [ -f "$INFILE" ]; then
         FIELD_NAME=$(ogrinfo -so "$INFILE" "$INBASE" 2>/dev/null | grep -Eo 'NE_ID|ne_id' | head -1)
+        # Detect geometry column name
+        GEOM_FIELD=$(ogrinfo -so "$INFILE" "$INBASE" 2>/dev/null | grep -E 'Geometry Column' | awk -F= '{print $2}' | xargs)
+        if [ -z "$GEOM_FIELD" ]; then
+          GEOM_FIELD="GEOMETRY"  # fallback to uppercase
+        fi
         if [ "$FIELD_NAME" = "ne_id" ]; then
-          ogr2ogr -f GPKG "$OUTFILE" "$INFILE" "$INBASE" \
+          ogr2ogr -overwrite -f GPKG "$OUTFILE" "$INFILE" "$INBASE" \
             -dialect sqlite \
-            -sql "SELECT CAST(ne_id AS INTEGER) AS NE_ID, $FIELDS FROM $INBASE"
+            -sql "SELECT CAST(ne_id AS INTEGER) AS NE_ID, $FIELDS, $GEOM_FIELD FROM $INBASE"
         elif [ "$FIELD_NAME" = "NE_ID" ]; then
-          ogr2ogr -f GPKG -select NE_ID,$FIELDS "$OUTFILE" "$INFILE" "$INBASE"
+          ogr2ogr -overwrite -f GPKG -select NE_ID,$FIELDS "$OUTFILE" "$INFILE" "$INBASE"
         fi
       fi
     elif [ "$format" = "geojson" ]; then
@@ -31,11 +36,18 @@ for scale in "${SCALES[@]}"; do
       OUTFILE="$OUTDIR/${OUTBASE}.geojson"
       if [ -f "$INFILE" ]; then
         FIELD_NAME=$(ogrinfo -so "$INFILE" "$INBASE" 2>/dev/null | grep -Eo 'NE_ID|ne_id' | head -1)
+        # Detect geometry column name
+        GEOM_FIELD=$(ogrinfo -so "$INFILE" "$INBASE" 2>/dev/null | grep -E 'Geometry Column' | awk -F= '{print $2}' | xargs)
+        if [ -z "$GEOM_FIELD" ]; then
+          GEOM_FIELD="GEOMETRY"  # fallback to uppercase
+        fi
         if [ "$FIELD_NAME" = "ne_id" ]; then
-          ogr2ogr -f GeoJSON "$OUTFILE" "$INFILE" -dialect sqlite \
-            -sql "SELECT CAST(ne_id AS INTEGER) AS NE_ID, $FIELDS FROM \"$INBASE\""
+          [ -f "$OUTFILE" ] && rm "$OUTFILE"
+          ogr2ogr -overwrite -f GeoJSON "$OUTFILE" "$INFILE" -dialect sqlite \
+            -sql "SELECT CAST(ne_id AS INTEGER) AS NE_ID, $FIELDS, $GEOM_FIELD FROM \"$INBASE\""
         elif [ "$FIELD_NAME" = "NE_ID" ]; then
-          ogr2ogr -f GeoJSON -select NE_ID,$FIELDS "$OUTFILE" "$INFILE"
+          [ -f "$OUTFILE" ] && rm "$OUTFILE"
+          ogr2ogr -overwrite -f GeoJSON -select NE_ID,$FIELDS "$OUTFILE" "$INFILE"
         fi
       fi
     elif [ "$format" = "shapefile" ]; then
@@ -44,11 +56,11 @@ for scale in "${SCALES[@]}"; do
       if [ -d "$INDIR_SHAPE" ]; then
         FIELD_NAME=$(ogrinfo -so "$INDIR_SHAPE" "$INBASE" 2>/dev/null | grep -Eo 'NE_ID|ne_id' | head -1)
         if [ "$FIELD_NAME" = "ne_id" ]; then
-          ogr2ogr -f "ESRI Shapefile" "$OUTDIR_SHAPE" "$INDIR_SHAPE" \
+          ogr2ogr -overwrite -f "ESRI Shapefile" "$OUTDIR_SHAPE" "$INDIR_SHAPE" \
             -dialect sqlite \
             -sql "SELECT CAST(ne_id AS INTEGER) AS NE_ID, $FIELDS FROM $INBASE"
         elif [ "$FIELD_NAME" = "NE_ID" ]; then
-          ogr2ogr -f "ESRI Shapefile" -select NE_ID,$FIELDS "$OUTDIR_SHAPE" "$INDIR_SHAPE"
+          ogr2ogr -overwrite -f "ESRI Shapefile" -select NE_ID,$FIELDS "$OUTDIR_SHAPE" "$INDIR_SHAPE"
         fi
       fi
     fi
