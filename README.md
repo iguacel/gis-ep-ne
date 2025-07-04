@@ -1,6 +1,8 @@
-# Process NE files with gdal
+!![World Natural Earth II](images/World%20Natural%20Earth%20II.jpg)
 
-Procesamiento de archivos de Natural Earth
+# EP Natural Earth
+
+Procesamiento de archivos de Natural Earth con gdal
 
 Carpeta en el drive
 Drive/My Drive/EP NATURAL EARTH
@@ -32,19 +34,36 @@ Automatiza la descarga y modificación de capas de países del repositorio [Natu
 
 - Se fusiona la geometría de Marruecos (`ISO_A3 = 'MAR'`) con la del Sáhara Occidental (`ISO_A3 = 'ESH'`).
 
----
-
 #### 🟢 Kazajistán + Baikonur
 
 - Se fusiona la geometría del área de Baikonur (ciudad administrada por Rusia bajo arrendamiento) con la de Kazajistán (`ISO_A3 = 'KAZ'`).
-
----
 
 ### Boundaries lines
 
 - Se eliminan las fronteras que aparecen detalladas arriba.
 
----
+## 📁 Estructura de la carpeta OUTPUT
+
+```
+OUTPUT/
+├── 📁 FULL/   # Archivos completos, con todos los atributos originales y geometrías procesadas
+│   ├── geojson/      # Versiones GeoJSON por escala
+│   ├── geopackage/   # Versiones GeoPackage por escala
+│   ├── shapefile/    # Versiones Shapefile por escala
+│   └── tmp/          # Archivos temporales intermedios
+├── 📁 REDUX/  # Archivos reducidos, solo con los campos clave para países y fronteras
+│   ├── geojson/      # Versiones GeoJSON reducidas
+│   ├── geopackage/   # Versiones GeoPackage reducidas
+│   └── shapefile/    # Versiones Shapefile reducidas
+└── 📁 BASE/   # Capas base físicas (costa, océanos, graticules, etc.) en geopackage
+    └── geopackage/   
+```
+
+- **FULL/**: Contiene los archivos completos, con todos los atributos y geometrías procesadas para cada escala (10m, 50m, 110m). Incluye subcarpetas para cada formato y archivos temporales.
+- **REDUX/**: Contiene versiones simplificadas de los archivos, solo con los campos clave necesarios para visualización o análisis básico.
+- **BASE/**: Incluye capas físicas base (costa, océanos, graticules, etc.) descargadas y convertidas a GeoPackage.
+
+------
 
 ## Versión *REDUX*
 
