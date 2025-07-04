@@ -12,3 +12,5 @@ Icon?
 
 # Folders
 OUTPUT/tmp/
+OUTPUT/**/*.gpkg-shm
+OUTPUT/**/*.gpkg-wal

@@ -3,8 +3,10 @@
 Procesamiento de archivos de Natural Earth
 
 Carpeta en el drive
-
 Drive/My Drive/EP NATURAL EARTH
+
+Doc en google docs
+<https://docs.google.com/document/d/1dFQIHUtnD8-tW3HSFGtwXeoIz9d_YFKppmUd7bNqGfc/edit?tab=t.0>
 
 ```
 https://drive.google.com/open?id=1sWIhB5gMuiVcLAZEeVnxMiP8AcKNuQ7g&usp=drive_fs
