@@ -1,0 +1,61 @@
+{
+  "BASE": {
+    "10m": [
+      "ne_10m_spain-ccaa",
+      "ne_10m_land",
+      "ne_10m_graticules_10",
+      "ne_10m_graticules_30",
+      "ne_10m_ocean",
+      "ne_10m_coastline",
+      "ne_10m_lakes",
+      "ne_10m_spain-provinces",
+      "ne_10m_wgs84_bounding_box"
+    ],
+    "50m": [
+      "ne_50m_lakes",
+      "ne_50m_graticules_30",
+      "ne_50m_graticules_10",
+      "ne_50m_ocean",
+      "ne_50m_wgs84_bounding_box",
+      "ne_50m_coastline",
+      "ne_50m_land"
+    ],
+    "110m": [
+      "ne_110m_coastline",
+      "ne_110m_lakes",
+      "ne_110m_wgs84_bounding_box",
+      "ne_110m_ocean",
+      "ne_110m_land",
+      "ne_110m_graticules_30",
+      "ne_110m_graticules_10"
+    ]
+  },
+  "FULL": {
+    "10m": [
+      "ne_10m_admin_0_boundary_lines_land_el_pais",
+      "ne_10m_admin_0_countries_el_pais"
+    ],
+    "50m": [
+      "ne_50m_admin_0_countries_el_pais",
+      "ne_50m_admin_0_boundary_lines_land_el_pais"
+    ],
+    "110m": [
+      "ne_110m_admin_0_boundary_lines_land_el_pais",
+      "ne_110m_admin_0_countries_el_pais"
+    ]
+  },
+  "REDUX": {
+    "10m": [
+      "ne_10m_admin_0_boundary_lines_land_el_pais_redux",
+      "ne_10m_admin_0_countries_el_pais_redux"
+    ],
+    "50m": [
+      "ne_50m_admin_0_boundary_lines_land_el_pais_redux",
+      "ne_50m_admin_0_countries_el_pais_redux"
+    ],
+    "110m": [
+      "ne_110m_admin_0_boundary_lines_land_el_pais_redux",
+      "ne_110m_admin_0_countries_el_pais_redux"
+    ]
+  }
+}

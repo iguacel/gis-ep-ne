@@ -1,0 +1,142 @@
+{
+  "ne_10m_spain-ccaa": {
+    "filename": "ne_10m_spain-ccaa",
+    "mode": "BASE"
+  },
+  "ne_10m_land": {
+    "filename": "ne_10m_land",
+    "mode": "BASE"
+  },
+  "ne_10m_graticules_10": {
+    "filename": "ne_10m_graticules_10",
+    "mode": "BASE"
+  },
+  "ne_10m_graticules_30": {
+    "filename": "ne_10m_graticules_30",
+    "mode": "BASE"
+  },
+  "ne_10m_ocean": {
+    "filename": "ne_10m_ocean",
+    "mode": "BASE"
+  },
+  "ne_10m_coastline": {
+    "filename": "ne_10m_coastline",
+    "mode": "BASE"
+  },
+  "ne_10m_lakes": {
+    "filename": "ne_10m_lakes",
+    "mode": "BASE"
+  },
+  "ne_10m_spain-provinces": {
+    "filename": "ne_10m_spain-provinces",
+    "mode": "BASE"
+  },
+  "ne_10m_wgs84_bounding_box": {
+    "filename": "ne_10m_wgs84_bounding_box",
+    "mode": "BASE"
+  },
+  "ne_50m_lakes": {
+    "filename": "ne_50m_lakes",
+    "mode": "BASE"
+  },
+  "ne_50m_graticules_30": {
+    "filename": "ne_50m_graticules_30",
+    "mode": "BASE"
+  },
+  "ne_50m_graticules_10": {
+    "filename": "ne_50m_graticules_10",
+    "mode": "BASE"
+  },
+  "ne_50m_ocean": {
+    "filename": "ne_50m_ocean",
+    "mode": "BASE"
+  },
+  "ne_50m_wgs84_bounding_box": {
+    "filename": "ne_50m_wgs84_bounding_box",
+    "mode": "BASE"
+  },
+  "ne_50m_coastline": {
+    "filename": "ne_50m_coastline",
+    "mode": "BASE"
+  },
+  "ne_50m_land": {
+    "filename": "ne_50m_land",
+    "mode": "BASE"
+  },
+  "ne_110m_coastline": {
+    "filename": "ne_110m_coastline",
+    "mode": "BASE"
+  },
+  "ne_110m_lakes": {
+    "filename": "ne_110m_lakes",
+    "mode": "BASE"
+  },
+  "ne_110m_wgs84_bounding_box": {
+    "filename": "ne_110m_wgs84_bounding_box",
+    "mode": "BASE"
+  },
+  "ne_110m_ocean": {
+    "filename": "ne_110m_ocean",
+    "mode": "BASE"
+  },
+  "ne_110m_land": {
+    "filename": "ne_110m_land",
+    "mode": "BASE"
+  },
+  "ne_110m_graticules_30": {
+    "filename": "ne_110m_graticules_30",
+    "mode": "BASE"
+  },
+  "ne_110m_graticules_10": {
+    "filename": "ne_110m_graticules_10",
+    "mode": "BASE"
+  },
+  "ne_10m_admin_0_boundary_lines_land_el_pais": {
+    "filename": "ne_10m_admin_0_boundary_lines_land_el_pais",
+    "mode": "FULL"
+  },
+  "ne_10m_admin_0_countries_el_pais": {
+    "filename": "ne_10m_admin_0_countries_el_pais",
+    "mode": "FULL"
+  },
+  "ne_50m_admin_0_countries_el_pais": {
+    "filename": "ne_50m_admin_0_countries_el_pais",
+    "mode": "FULL"
+  },
+  "ne_50m_admin_0_boundary_lines_land_el_pais": {
+    "filename": "ne_50m_admin_0_boundary_lines_land_el_pais",
+    "mode": "FULL"
+  },
+  "ne_110m_admin_0_boundary_lines_land_el_pais": {
+    "filename": "ne_110m_admin_0_boundary_lines_land_el_pais",
+    "mode": "FULL"
+  },
+  "ne_110m_admin_0_countries_el_pais": {
+    "filename": "ne_110m_admin_0_countries_el_pais",
+    "mode": "FULL"
+  },
+  "ne_10m_admin_0_boundary_lines_land_el_pais_redux": {
+    "filename": "ne_10m_admin_0_boundary_lines_land_el_pais_redux",
+    "mode": "REDUX"
+  },
+  "ne_10m_admin_0_countries_el_pais_redux": {
+    "filename": "ne_10m_admin_0_countries_el_pais_redux",
+    "mode": "REDUX"
+  },
+  "ne_50m_admin_0_boundary_lines_land_el_pais_redux": {
+    "filename": "ne_50m_admin_0_boundary_lines_land_el_pais_redux",
+    "mode": "REDUX"
+  },
+  "ne_50m_admin_0_countries_el_pais_redux": {
+    "filename": "ne_50m_admin_0_countries_el_pais_redux",
+    "mode": "REDUX"
+  },
+  "ne_110m_admin_0_boundary_lines_land_el_pais_redux": {
+    "filename": "ne_110m_admin_0_boundary_lines_land_el_pais_redux",
+    "mode": "REDUX"
+  },
+  "ne_110m_admin_0_countries_el_pais_redux": {
+    "filename": "ne_110m_admin_0_countries_el_pais_redux",
+    "mode": "REDUX"
+  }
+}

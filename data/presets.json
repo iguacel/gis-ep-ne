@@ -1,21 +1,64 @@
 {
-  "scale": "50m",
+  "scale": "110m",
   "layers": [
     {
-      "name": "Countries",
-      "filename": "ne_50m_admin_0_countries_el_pais_redux.gpkg",
+      "name": "Bounding Box",
+      "alias": "ne_110m_wgs84_bounding_box",
       "style": {
-        "fill": "#b2e57a",
-        "stroke": "#7ed321",
+        "fill": "#caefff",
+        "stroke": "#000000",
         "stroke_width": 0.4
       }
     },
-        {
-      "name": "Boundaries",
-      "filename": "ne_50m_admin_0_boundary_lines_land_el_pais_redux.gpkg",
+    {
+      "name": "Ocean",
+      "alias": "ne_110m_ocean",
       "style": {
-        "stroke": "#009600",
+        "fill": "#caefff"
+      }
+    },
+    {
+      "name": "Land",
+      "alias": "ne_110m_land",
+      "style": {
+        "fill": "#ffffff",
+        "stroke": "#cccccc",
+        "stroke_width": 0.2
+      }
+    },
+    {
+      "name": "Countries",
+      "alias": "ne_110m_admin_0_countries_el_pais_redux",
+      "style": {
+        "fill": "#ffffff",
+        "stroke": "#cccccc",
         "stroke_width": 0.3
+      }
+    },
+    {
+      "name": "Boundaries",
+      "alias": "ne_110m_admin_0_boundary_lines_land_el_pais_redux",
+      "style": {
+        "stroke": "#000000",
+        "stroke_width": 0.3
+      }
+    },
+    {
+      "name": "Provincias",
+      "alias": "ne_110m_spain-provinces",
+      "style": {
+        "fill": "#ffffff",
+        "stroke": "#aaaaaa",
+        "stroke_width": 0.2
+      }
+    },
+      {
+      "name": "CCAA",
+      "alias": "ne_110m_spain-ccaa",
+      "style": {
+        "fill": "#eeeeee",
+        "stroke": "#000000",
+        "stroke_width": 0.2
       }
     }
   ]

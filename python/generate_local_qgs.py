@@ -7,46 +7,46 @@ from qgis.core import (
     QgsSingleSymbolRenderer
 )
 
-# Rutas
+# 📁 Configuración de rutas base
 BASE_DIR = Path(__file__).resolve().parent.parent
 PRESETS_PATH = BASE_DIR / "data" / "presets.json"
-SUMMARY_PATH = BASE_DIR / "data" / "layers_summary.json"
+ALIASES_PATH = BASE_DIR / "data" / "layer_aliases.json"
 OUTPUT_FILE = BASE_DIR / "template.qgs"
 
-# Inicializar QGIS sin GUI
+# 🧠 Leer configuración y aliases
+with open(PRESETS_PATH, "r") as f:
+    config = json.load(f)
+
+with open(ALIASES_PATH, "r") as f:
+    aliases = json.load(f)
+
+scale = config["scale"]
+layers = config["layers"]
+
+# 🚀 Inicializar QGIS sin GUI
 QgsApplication.setPrefixPath("/Applications/QGIS.app/Contents/MacOS", True)
 qgs = QgsApplication([], False)
 qgs.initQgis()
 
-# Leer presets
-with open(PRESETS_PATH, "r") as f:
-    config = json.load(f)
-
-scale = config["scale"]
-layers = config["layers"]
-geopkg_base = BASE_DIR / "OUTPUT" / "REDUX" / "geopackage" / scale
-
-# Leer listado de capas válidas
-with open(SUMMARY_PATH, "r") as f:
-    summary = json.load(f)
-
-valid_layers = summary.get("REDUX", {}).get(scale, [])
-
-# Crear proyecto QGIS
 project = QgsProject.instance()
 project.setCrs(QgsCoordinateReferenceSystem("EPSG:4326"))
 
 for layer_cfg in layers:
     name = layer_cfg["name"]
-    filename = layer_cfg["filename"]
+    alias = layer_cfg["alias"]
     style = layer_cfg.get("style", {})
 
-    if filename.replace(".gpkg", "") not in valid_layers:
-        print(f"⚠️  {filename} no está listado en layers_summary.json para REDUX {scale}")
+    if alias not in aliases:
+        print(f"❌ Alias no encontrado: {alias}")
+        continue
 
-    layer_path = geopkg_base / filename
+    entry = aliases[alias]
+    filename = entry["filename"] + ".gpkg"
+    mode = entry["mode"]
+    layer_path = BASE_DIR / "OUTPUT" / mode / "geopackage" / scale / filename
+
     if not layer_path.exists():
-        print(f"❌ No existe: {layer_path}")
+        print(f"❌ Archivo no encontrado: {layer_path}")
         continue
 
     layer = QgsVectorLayer(str(layer_path), name, "ogr")
@@ -56,7 +56,7 @@ for layer_cfg in layers:
 
     print(f"✅ Añadiendo: {name}")
 
-    # Detectar tipo de geometría y aplicar estilo
+    # 🎨 Estilo por tipo de geometría
     geom_type = QgsWkbTypes.geometryType(layer.wkbType())
 
     if geom_type == QgsWkbTypes.PolygonGeometry:
@@ -84,7 +84,7 @@ for layer_cfg in layers:
     layer.setRenderer(QgsSingleSymbolRenderer(symbol))
     project.addMapLayer(layer)
 
-# Guardar proyecto
+# 💾 Guardar proyecto
 project.write(str(OUTPUT_FILE))
 print(f"\n✅ Proyecto generado en: {OUTPUT_FILE}")
 
