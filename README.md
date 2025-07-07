@@ -143,3 +143,9 @@ Este script descarga y convierte a geopackage algunas capas básicas. No se ejec
 ```
 
 Crea ne_10m_spain-ccaa.gpkg y ne_10m_spain-provinces.gpkg a partir de ne_10m_admin_1_states_provinces.shp
+
+# Crear proyecto
+
+```bash
+/Applications/QGIS.app/Contents/MacOS/bin/python3 scripts/generate_local_qgs.py
+```

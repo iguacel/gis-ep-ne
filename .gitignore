@@ -2,15 +2,35 @@
 .DS_Store
 .AppleDouble
 .LSOverride
-
-# Icon files
 Icon?
 ._*
-
-# Thumbnails
 ._.DS_Store
 
-# Folders
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+
+# QGIS backups and caches
+*.qgs~
+*.bak
+*.db
+
+# Docker
+*.log
+*.pid
+.qgis-profile/
+.env
+docker-compose.override.yml
+
+# Output files
 OUTPUT/tmp/
 OUTPUT/**/*.gpkg-shm
 OUTPUT/**/*.gpkg-wal
+
+# Temporary archives
+*.zip
+*.tar.gz
+*.7z
+*.pdf
