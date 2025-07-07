@@ -7,4 +7,4 @@ WORKDIR /app
 COPY . .
 
 # Comando por defecto: ejecutar tu script
-CMD ["python3", "scripts/generate_docker_qgs.py"]
+CMD ["python3", "python/generate_docker_qgs.py"]

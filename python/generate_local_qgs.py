@@ -7,9 +7,10 @@ from qgis.core import (
     QgsSingleSymbolRenderer
 )
 
-# Ruta base: sube un nivel desde scripts/
+# Rutas
 BASE_DIR = Path(__file__).resolve().parent.parent
 PRESETS_PATH = BASE_DIR / "data" / "presets.json"
+SUMMARY_PATH = BASE_DIR / "data" / "layers_summary.json"
 OUTPUT_FILE = BASE_DIR / "template.qgs"
 
 # Inicializar QGIS sin GUI
@@ -17,13 +18,19 @@ QgsApplication.setPrefixPath("/Applications/QGIS.app/Contents/MacOS", True)
 qgs = QgsApplication([], False)
 qgs.initQgis()
 
-# Leer configuración
+# Leer presets
 with open(PRESETS_PATH, "r") as f:
     config = json.load(f)
 
 scale = config["scale"]
 layers = config["layers"]
 geopkg_base = BASE_DIR / "OUTPUT" / "REDUX" / "geopackage" / scale
+
+# Leer listado de capas válidas
+with open(SUMMARY_PATH, "r") as f:
+    summary = json.load(f)
+
+valid_layers = summary.get("REDUX", {}).get(scale, [])
 
 # Crear proyecto QGIS
 project = QgsProject.instance()
@@ -33,6 +40,9 @@ for layer_cfg in layers:
     name = layer_cfg["name"]
     filename = layer_cfg["filename"]
     style = layer_cfg.get("style", {})
+
+    if filename.replace(".gpkg", "") not in valid_layers:
+        print(f"⚠️  {filename} no está listado en layers_summary.json para REDUX {scale}")
 
     layer_path = geopkg_base / filename
     if not layer_path.exists():
