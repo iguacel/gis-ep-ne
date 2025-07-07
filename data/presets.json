@@ -1,0 +1,22 @@
+{
+  "scale": "110m",
+  "layers": [
+    {
+      "name": "Countries",
+      "filename": "ne_110m_admin_0_countries_el_pais_redux.gpkg",
+      "style": {
+        "fill": "#82268c",
+        "stroke": "#ff4140",
+        "stroke_width": 0.4
+      }
+    },
+        {
+      "name": "Boundaries",
+      "filename": "ne_110m_admin_0_boundary_lines_land_el_pais_redux.gpkg",
+      "style": {
+        "stroke": "#ffd000",
+        "stroke_width": 0.3
+      }
+    }
+  ]
+}
