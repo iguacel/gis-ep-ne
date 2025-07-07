@@ -1,7 +1,7 @@
 ![World Natural Earth II](images/World%20Natural%20Earth%20II.jpg)
 <https://github.com/iguacel/gis-gdal-ne>
 
-# EP Natural Earth
+# gis-ep-ne
 
 Procesamiento de archivos de Natural Earth con gdal
 
