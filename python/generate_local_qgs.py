@@ -7,13 +7,16 @@ from qgis.core import (
     QgsSingleSymbolRenderer
 )
 
-# 📁 Configuración de rutas base
+# Inicializar QGIS sin GUI
+qgs = QgsApplication([b""], False)
+qgs.setPrefixPath("/usr", True)  # ⚠️ Asegúrate de que esto va bien en tu entorno
+qgs.initQgis()
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 PRESETS_PATH = BASE_DIR / "data" / "presets.json"
 ALIASES_PATH = BASE_DIR / "data" / "layer_aliases.json"
 OUTPUT_FILE = BASE_DIR / "template.qgs"
 
-# 🧠 Leer configuración y aliases
 with open(PRESETS_PATH, "r") as f:
     config = json.load(f)
 
@@ -22,11 +25,7 @@ with open(ALIASES_PATH, "r") as f:
 
 scale = config["scale"]
 layers = config["layers"]
-
-# 🚀 Inicializar QGIS sin GUI
-QgsApplication.setPrefixPath("/Applications/QGIS.app/Contents/MacOS", True)
-qgs = QgsApplication([], False)
-qgs.initQgis()
+geopkg_base = BASE_DIR / "OUTPUT" / "REDUX" / "geopackage" / scale
 
 project = QgsProject.instance()
 project.setCrs(QgsCoordinateReferenceSystem("EPSG:4326"))
@@ -40,13 +39,12 @@ for layer_cfg in layers:
         print(f"❌ Alias no encontrado: {alias}")
         continue
 
-    entry = aliases[alias]
-    filename = entry["filename"] + ".gpkg"
-    mode = entry["mode"]
+    filename = aliases[alias]["filename"] + ".gpkg"
+    mode = aliases[alias]["mode"]
     layer_path = BASE_DIR / "OUTPUT" / mode / "geopackage" / scale / filename
 
     if not layer_path.exists():
-        print(f"❌ Archivo no encontrado: {layer_path}")
+        print(f"❌ No existe: {layer_path}")
         continue
 
     layer = QgsVectorLayer(str(layer_path), name, "ogr")
@@ -55,28 +53,38 @@ for layer_cfg in layers:
         continue
 
     print(f"✅ Añadiendo: {name}")
-
-    # 🎨 Estilo por tipo de geometría
     geom_type = QgsWkbTypes.geometryType(layer.wkbType())
+
+    fill_color = style.get("fill", "#eeeeee")
+    stroke_color = style.get("stroke", "#111111")
+    stroke_width = str(style.get("stroke_width", 0.26))
+    fill_style = style.get("style", "solid")
+    line_style = style.get("line_style", "solid")
 
     if geom_type == QgsWkbTypes.PolygonGeometry:
         symbol = QgsFillSymbol.createSimple({
-            "color": style.get("fill", "#eeeeee"),
-            "outline_color": style.get("stroke", "#111111"),
-            "outline_width": str(style.get("stroke_width", 0.26)),
-            "style": "solid"
+            "color": fill_color,
+            "outline_color": stroke_color,
+            "outline_width": stroke_width,
+            "style": fill_style,
+            "outline_style": line_style
         })
+
     elif geom_type == QgsWkbTypes.LineGeometry:
         symbol = QgsLineSymbol.createSimple({
-            "color": style.get("stroke", "#111111"),
-            "width": str(style.get("stroke_width", 0.26))
+            "color": stroke_color,
+            "width": stroke_width,
+            "line_style": line_style
         })
+
     elif geom_type == QgsWkbTypes.PointGeometry:
         symbol = QgsMarkerSymbol.createSimple({
-            "color": style.get("fill", "#eeeeee"),
-            "outline_color": style.get("stroke", "#111111"),
+            "color": fill_color,
+            "outline_color": stroke_color,
+            "outline_style": line_style,
             "size": "3"
         })
+
     else:
         print(f"⚠️ Geometría no soportada: {name}")
         continue
@@ -84,8 +92,7 @@ for layer_cfg in layers:
     layer.setRenderer(QgsSingleSymbolRenderer(symbol))
     project.addMapLayer(layer)
 
-# 💾 Guardar proyecto
+# Guardar proyecto QGIS
 project.write(str(OUTPUT_FILE))
 print(f"\n✅ Proyecto generado en: {OUTPUT_FILE}")
-
 qgs.exitQgis()

@@ -5,7 +5,9 @@
       "name": "Bounding Box",
       "alias": "ne_10m_wgs84_bounding_box",
       "style": {
+        "style": "solid",
         "fill": "#caefff",
+        "line_style": "solid",
         "stroke": "#000000",
         "stroke_width": 0.4
       }
@@ -14,25 +16,27 @@
       "name": "Ocean",
       "alias": "ne_10m_ocean",
       "style": {
+        "style": "solid",
         "fill": "#caefff",
-        "stroke": "#cccccc",
-        "stroke_width": 0.2
+        "line_style": "no"
       }
     },
     {
       "name": "Land",
       "alias": "ne_10m_land",
       "style": {
+        "style": "solid",
         "fill": "#ffffff",
-        "stroke": "#cccccc",
-        "stroke_width": 0.2
+        "line_style": "no"
       }
     },
     {
       "name": "Countries",
       "alias": "ne_10m_admin_0_countries_el_pais_redux",
       "style": {
+        "style": "solid",
         "fill": "#ffffff",
+        "line_style": "solid",
         "stroke": "#cccccc",
         "stroke_width": 0.3
       }
@@ -41,6 +45,8 @@
       "name": "Boundaries",
       "alias": "ne_10m_admin_0_boundary_lines_land_el_pais_redux",
       "style": {
+        "style": "no",
+        "line_style": "dot",
         "stroke": "#000000",
         "stroke_width": 0.3
       }
@@ -49,18 +55,20 @@
       "name": "Provincias",
       "alias": "ne_10m_spain-provinces",
       "style": {
-        "fill": "#ffffff",
+        "style": "no",
+        "line_style": "dash",
         "stroke": "#aaaaaa",
-        "stroke_width": 0.2
+        "stroke_width": 0.3
       }
     },
-      {
+    {
       "name": "CCAA",
       "alias": "ne_10m_spain-ccaa",
       "style": {
-        "fill": "#eeeeee",
-        "stroke": "#000000",
-        "stroke_width": 0.2
+        "style": "no",
+        "line_style": "solid",
+        "stroke": "#666666",
+        "stroke_width": 0.3
       }
     }
   ]

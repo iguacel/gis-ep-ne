@@ -4,7 +4,7 @@
 
 ```bash
 PROJ_LIB=/Applications/QGIS.app/Contents/Resources/proj \
-/Applications/QGIS.app/Contents/MacOS/bin/python3 scripts/generate_local_qgs.py
+/Applications/QGIS.app/Contents/MacOS/bin/python3 python/generate_local_qgs.py
 
 ```
 
@@ -25,3 +25,30 @@ docker build -t qgis-generator .
 docker run --rm -v $(pwd):/app qgis-generator
 
 ```
+
+## Estilos de capa
+
+🎨 Equivalentes en QGIS a lo que ves en el panel de simbología
+Vamos a lo importante:
+
+✅ Para rellenos (QgsFillSymbol.createSimple)
+
+- "style": "no" → equivale a Fill style: No Brush
+
+- "style": "solid" → Fill style: Solid
+
+- "style": "bdiagonal" → Diagonal patterns, etc.
+
+✅ Para líneas (QgsLineSymbol.createSimple)
+
+- "line_style": "no" → Stroke style: No Line
+
+- "line_style": "solid" → Stroke style: Solid Line
+
+- "line_style": "dot" → Dotted
+
+- "line_style": "dash" → Dashed
+
+- "line_style": "dashdot" → Dash-Dot
+
+⚠️ Nota: QgsLineSymbol.createSimple() espera "line_style" en lugar de "style"
