@@ -8,6 +8,10 @@ const config = {
 	preprocess: vitePreprocess(),
 	kit: { adapter: adapter() },
 	base: '/gis-ep-ne',
+	prerender: {
+		default: true
+	},
+	trailingSlash: 'always'
 };
 
 export default config;
