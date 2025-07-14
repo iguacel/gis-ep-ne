@@ -1,7 +1,5 @@
 <script lang="ts">
 	import Header from './Header.svelte';
-	import github from '$lib/images/github.svg';
-
 	import '../app.css';
 
 	let { children } = $props();
@@ -16,9 +14,7 @@
 
 	<footer>
 		<p>
-			<a href="https://github.com/iguacel/gis-ep-ne">
-				<img class="logo" src={github} alt="GitHub" />
-			</a>
+			visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to learn about SvelteKit
 		</p>
 	</footer>
 </div>
@@ -51,11 +47,6 @@
 
 	footer a {
 		font-weight: bold;
-	}
-
-	.logo {
-		width: 2em;
-		height: 2em;
 	}
 
 	@media (min-width: 480px) {

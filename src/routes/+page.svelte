@@ -5,7 +5,7 @@
 </script>
 
 <svelte:head>
-	<title>EP-GIS</title>
+	<title>Home</title>
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 
