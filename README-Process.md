@@ -44,14 +44,14 @@ Automatiza la descarga y modificación de capas de países del repositorio [Natu
 ```
 OUTPUT/
 ├── 📁 FULL/   # Archivos completos, con todos los atributos originales y geometrías procesadas
-│   ├── geojson/      # Versiones GeoJSON por escala
-│   ├── geopackage/   # Versiones GeoPackage por escala
-│   ├── shapefile/    # Versiones Shapefile por escala
+│   ├── geojson/
+│   ├── geopackage/
+│   ├── shapefile/
 │   └── tmp/          # Archivos temporales intermedios
 ├── 📁 REDUX/  # Archivos reducidos, solo con los campos clave para países y fronteras
-│   ├── geojson/      # Versiones GeoJSON reducidas
-│   ├── geopackage/   # Versiones GeoPackage reducidas
-│   └── shapefile/    # Versiones Shapefile reducidas
+│   ├── geojson/ 
+│   ├── geopackage/
+│   └── shapefile/
 └── 📁 BASE/   # Capas base físicas (costa, océanos, graticules, etc.) en geopackage
     └── geopackage/   
 ```
