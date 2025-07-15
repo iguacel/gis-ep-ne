@@ -24,7 +24,7 @@ const config = {
 			fallback: 'index.html'
 		}),
 		paths: {
-			base: process.env.NODE_ENV === 'production' ? '/derivault' : ''
+			base: process.env.NODE_ENV === 'production' ? '/gis-ep-ne' : ''
 		}
 	}
 };
